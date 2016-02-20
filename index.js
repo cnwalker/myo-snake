@@ -1,6 +1,8 @@
 var express = require('express');
 var app = express();
-var bodyParser = require('body-parser')
+var url = require('url');
+var exec = require('child_process').exec;
+var bodyParser = require('body-parser');
 
 app.use( bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
@@ -20,15 +22,29 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 app.get('/', function(request, response) {
-  response.render('pages/index');
+  var query = url.parse(request.url, true).query;
+  args = {
+      canvasWidth: query.canvasWidth || 500,
+      canvasHeight: query.canvasHeight || 500
+  }
+  response.render('pages/index', args);
 });
 
-app.post('/image', function(request, response) {
-    var img_data = request.body;
+app.post('/', function(request, response) {
+
     // var args = [ './child.js' ];
     // var child = spawn(process.execPath, args, { stdio: ['pipe', 1, 2, 'ipc'] });
     // img_data.pipe(child.stdin);
-    response.send('cool');
+     exec(__dirname + '/python_script.py', function(error, stdout, stderr) {
+      if (error) {
+        console.log(error);
+      }
+      console.log(callback(JSON.parse(stdout)));
+  });
+    response.send(JSON.stringify({
+        canvasWidth: 100,
+        canvasHeight: 200
+    }));
 });
 
 app.listen(app.get('port'), function() {
