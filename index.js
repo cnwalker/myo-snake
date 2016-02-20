@@ -24,7 +24,10 @@ app.get('/', function(request, response) {
 });
 
 app.post('/image', function(request, response) {
-    console.log(request.body)
+    var img_data = request.body;
+    // var args = [ './child.js' ];
+    // var child = spawn(process.execPath, args, { stdio: ['pipe', 1, 2, 'ipc'] });
+    // img_data.pipe(child.stdin);
     response.send('cool');
 });
 
