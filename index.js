@@ -1,5 +1,7 @@
 var express = require('express');
 var app = express();
+var url = require('url');
+var filemanager = require('./photomanager');
 
 app.set('port', (process.env.PORT || 5000));
 
@@ -10,11 +12,21 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 app.get('/', function(request, response) {
-  response.render('pages/index');
+  var query = url.parse(request.url, true).query;
+  args = {
+      canvasWidth: query.canvasWidth || 500,
+      canvasHeight: query.canvasHeight || 500
+  }
+  response.render('pages/index', args);
+});
+
+app.post('/', function(request, response) {
+    response.send(JSON.stringify({
+        canvasWidth: 100,
+        canvasHeight: 200
+    }));
 });
 
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
-
-
