@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var url = require('url');
-var filemanager = require('./photomanager');
+var exec = require('child_process').exec;
 
 app.set('port', (process.env.PORT || 5000));
 
@@ -21,6 +21,12 @@ app.get('/', function(request, response) {
 });
 
 app.post('/', function(request, response) {
+     exec(__dirname + '/python_script.py', function(error, stdout, stderr) {
+      if (error) {
+        console.log(error);
+      }
+      console.log(callback(JSON.parse(stdout)));
+  });
     response.send(JSON.stringify({
         canvasWidth: 100,
         canvasHeight: 200
