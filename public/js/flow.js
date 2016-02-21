@@ -1,7 +1,7 @@
 $(document).ready(function() {
     $('.fa-camera').on('click', function() {
-        console.log("camera");
         startWebCam(function (track) {
+            stopDemo();
             toggleVisibility($('.camera'));
             toggleVisibility($('.fa-upload'));
             toggleVisibility($('.middle'));
@@ -20,7 +20,7 @@ $(document).ready(function() {
         });
     })
     $('.fa-upload').on('click', function() {
-        console.log("upload");
+        stopDemo();
         $('.upload').trigger("click");
     })
 });
