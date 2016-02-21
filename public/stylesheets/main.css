@@ -3,8 +3,25 @@
     margin: auto;
 }
 
+.title {
+    padding-top: 40px;
+}
+
+.buttons {
+    padding-top: 20px;
+}
+
+.button {
+    top: -4px;
+    position: relative;
+}
+
 .text-center {
     text-align: center;
+}
+
+.middle {
+    font-size: 70px;
 }
 
 .hover-blue:hover {

@@ -4,7 +4,7 @@ $(document).ready(function() {
         startWebCam(function (track) {
             toggleVisibility($('.camera'));
             toggleVisibility($('.fa-upload'));
-            toggleVisibility($('.or'));
+            toggleVisibility($('.middle'));
             $('.fa-camera').on('click', function (e) {
                 var photo = takePicture(e);
                 track.stop();
