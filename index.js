@@ -1,7 +1,10 @@
 var express = require('express');
 var app = express();
 var url = require('url');
+var fs = require('fs');
 const spawn = require('child_process').spawn;
+const StringDecoder = require('string_decoder').StringDecoder;
+const decoder = new StringDecoder('utf8');
 var bodyParser = require('body-parser');
 var stream = require('stream');
 
@@ -32,29 +35,39 @@ app.get('/', function(request, response) {
 });
 
 app.post('/', function(request, response) {
-    var imgStream = new stream.PassThrough();
-    var img_data = request.body;
-    imgStream.end(img_data);
-    var child = spawn('python',['/Users/hlewis/projects/hackill/myo-snake/python-script/test.py'], {
-        stdio: 'pipe'
-    });
-    imgStream.pipe(child.stdin);
+    var img_data = request.body.toString() ;
+    var base64Data = img_data.replace(/^data:image\/png;base64,/, "");
+    var fname = 'tmp/' + Date.now().toString() +'.png'
+    fs.writeFile(fname, base64Data, 'base64', function (err) {
+        var imgStream = fs.createReadStream(fname)
+        var child = spawn('python',['-W ignore','python-script/cam_edge.py'], {
+            stdio: 'pipe'
+        });
+        imgStream.pipe(child.stdin);
 
-    child.stdout.on('data', (data) => {
-        console.log("stdout");
-        // response.send(data);
-    });
+        var outputString = '';
 
-    child.stderr.on('data', (data) => {
-        console.log("Error:" + data);
-        // response.send(data);
-    });
+        child.stdout.on('data', function (data) {
+            outputString += data.toString();
+        });
 
-    child.on('close', (code) => {
-        console.log(`child process exited with code ${code}`);
-        response.send(code);
-    });
+        child.stderr.on('data', function (data) {
+            console.log("error: "+data);
+            var payload = {
+                error: true
+            }
+            response.send(payload);
+        });
 
+        child.on('close', function (code) {
+            console.log('child process exited with code ' + code + ' and length ' + outputString.length);
+            fs.unlink(fname);
+            var payload = {
+                data: outputString
+            }
+            response.send(payload);
+        });
+    });
 });
 
 app.listen(app.get('port'), function() {
