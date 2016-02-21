@@ -26,11 +26,11 @@ createGame = function(game_logic){
     canvas.height = game_logic['canvasHeight'] *cw;
     // }
 
-    // for (var ix = 0; ix < game_logic['canvasWidth']; ix++){
-    //     for (var iy = 0; iy < game_logic['canvasHeight']; iy++) {
-    //         paint_cell(ix, iy, "white", "black")
-    //     }
-    // }
+    for (var ix = 0; ix < game_logic['canvasWidth']; ix++){
+        for (var iy = 0; iy < game_logic['canvasHeight']; iy++) {
+            paint_cell(ix, iy, "white", "black")
+        }
+    }
 
     function init() {
     	    d = "right"; //default direction
@@ -45,7 +45,7 @@ createGame = function(game_logic){
     		if(typeof game_loop != "undefined") clearInterval(game_loop);
     		game_loop = setInterval(paint, 60);
     }
-    init();
+    // init();
 
     var d;
     var food;
