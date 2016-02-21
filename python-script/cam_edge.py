@@ -21,6 +21,7 @@ def main():
     f=open (fname, 'wb')
     f.write(data)
     f.close()
+    # TODO this could be done better, cv2.imdecode()?
 
     img = cv2.imread(fname)
     img_g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
