@@ -148,7 +148,7 @@ createGame = function(game_logic){
     	{
     		var c = snake_array[i];
     		//Lets paint 10px wide cells
-    		paint_cell(c.x, c.y, "blue", "black");
+    		paint_cell(c.x, c.y, "white", "black");
     	}
 
     	//Lets paint the food
