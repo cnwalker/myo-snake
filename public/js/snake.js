@@ -1,7 +1,7 @@
 startSnake = function (init) {
     var game_logic = JSON.parse(init.data);
     game_logic['canvasWidth'] = game_logic.map_array[0].length;
-    game_logic['canvasheight'] = game_logic.map_array.length;
+    game_logic['canvasHeight'] = game_logic.map_array.length;
 
     createGame(game_logic);
 };
@@ -9,19 +9,27 @@ startSnake = function (init) {
 createGame = function(game_logic){
     var canvas = $("#canvas")[0];
     var ctx = canvas.getContext("2d");
-    var w = $("#canvas").width();
-    var h = $("#canvas").height();
+    var w = game_logic['canvasWidth']* cw;
+    var h = game_logic['canvasHeight']* cw;
     var good_point;
     //Lets save the cell width in a variable for easy control
-    var cw = 15;
+    var cw = 10;
     //Canvas stuff
 
-    // console.log($('#canvas').width());
-    // console.log($('#canvas').height());
+    console.log($('#canvas').width());
+    console.log(game_logic['canvasWidth']);
+    console.log($('#canvas').height());
+    console.log(game_logic['canvasHeight']);
     // if (canvas.width === w && canvas.height === h)
     // {
-    //     canvas.width = game_logic['canvasWidth']*cw;
-    //     canvas.height = game_logic['canvasHeight']*cw;
+    canvas.width = game_logic['canvasWidth']* cw;
+    canvas.height = game_logic['canvasHeight'] *cw;
+    // }
+
+    // for (var ix = 0; ix < game_logic['canvasWidth']; ix++){
+    //     for (var iy = 0; iy < game_logic['canvasHeight']; iy++) {
+    //         paint_cell(ix, iy, "white", "black")
+    //     }
     // }
 
     function init() {
@@ -48,11 +56,6 @@ createGame = function(game_logic){
 
     function paint_board_with_image(open_cells, deadly_cells)
     {
-        for (open_cell in open_cells)
-        {
-            paint_cell(open_cell[1], open_cell[0], "black", "white");
-        }
-
         for (deadly_cell in deadly_cells)
         {
             paint_cell(deadly_cell[1], deadly_cell[0], "white", "black");
@@ -90,10 +93,7 @@ createGame = function(game_logic){
     	//To avoid the snake trail we need to paint the BG on every frame
     	//Lets paint the canvas now
 
-        ctx.fillStyle = "black";
-    	ctx.fillRect(0, 0, w, h);
-    	ctx.strokeStyle = "white";
-    	ctx.strokeRect(0, 0, w, h);
+        copyCanvas();
 
         paint_board_with_image(game_logic['good_points'], game_logic['bad_points']);
 
@@ -146,7 +146,7 @@ createGame = function(game_logic){
     	{
     		var c = snake_array[i];
     		//Lets paint 10px wide cells
-    		paint_cell(c.x, c.y, "white", "white");
+    		paint_cell(c.x, c.y, "white", "black");
     	}
 
     	//Lets paint the food
@@ -188,3 +188,11 @@ createGame = function(game_logic){
     	//The snake is now keyboard controllable
     })
 };
+
+copyCanvas = function() {
+    var canvasOne = document.getElementById('photoCanvas');
+    var canvasTwo = document.getElementById('canvas');
+    canvasTwo.width = canvasOne.width;
+    canvasTwo.height = canvasOne.height;
+    canvasTwo.getContext('2d').drawImage(canvasOne, 0, 0, canvasOne.width, canvasOne.height)
+}
