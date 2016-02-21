@@ -38,7 +38,7 @@ app.post('/', function(request, response) {
     var img_data = request.body.toString() ;
     var base64Data = img_data.replace(/^data:image\/png;base64,/, "");
     var fname = 'tmp/' + Date.now().toString() +'.png'
-    fs.writeFile(fname, base64Data, 'base64', (err) => {
+    fs.writeFile(fname, base64Data, 'base64', function (err) {
         var imgStream = fs.createReadStream(fname)
         var child = spawn('python',['-W ignore','python-script/cam_edge.py'], {
             stdio: 'pipe'
@@ -47,11 +47,11 @@ app.post('/', function(request, response) {
 
         var outputString = '';
 
-        child.stdout.on('data', (data) => {
+        child.stdout.on('data', function (data) {
             outputString += data.toString();
         });
 
-        child.stderr.on('data', (data) => {
+        child.stderr.on('data', function (data) {
             console.log("error: "+data);
             var payload = {
                 error: true
@@ -59,7 +59,7 @@ app.post('/', function(request, response) {
             response.send(payload);
         });
 
-        child.on('close', (code) => {
+        child.on('close', function (code) {
             console.log(`child process exited with code ${code} and length ${outputString.length}`);
             fs.unlink(fname);
             var payload = {
