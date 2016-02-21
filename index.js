@@ -3,7 +3,7 @@ var app = express();
 var url = require('url');
 const spawn = require('child_process').spawn;
 var bodyParser = require('body-parser');
-var stream = require('stream');
+//var stream = require('stream');
 
 app.use(bodyParser.json()); // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({ // to support URL-encoded bodies
@@ -34,24 +34,23 @@ app.get('/', function(request, response) {
 app.post('/', function(request, response) {
     var imgStream = new stream.PassThrough();
     var img_data = request.body;
-    imgStream.end(img_data);
-    var child = spawn('python',['/Users/hlewis/projects/hackill/myo-snake/python-script/test.py'], {
+    //imgStream.end(img_data);
+    var child = spawn('python',[__dirname + '/python-script/test.py'], {
         stdio: 'pipe'
     });
-    imgStream.pipe(child.stdin);
+    //imgStream.pipe(child.stdin);
 
-    child.stdout.on('data', (data) => {
+    child.stdout.on('data', function(data) {
         console.log("stdout");
         // response.send(data);
     });
 
-    child.stderr.on('data', (data) => {
+    child.stderr.on('data', function(data) {
         console.log("Error:" + data);
         // response.send(data);
     });
 
-    child.on('close', (code) => {
-        console.log(`child process exited with code ${code}`);
+    child.on('close', function(code) {
         response.send(code);
     });
 
