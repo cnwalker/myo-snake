@@ -56,7 +56,7 @@ app.post('/', function(request, response) {
             var payload = {
                 error: true
             }
-            response.send(payload);
+            response.status(400).send(payload);
         });
 
         child.on('close', function (code) {

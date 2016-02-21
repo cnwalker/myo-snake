@@ -2,12 +2,18 @@ $(document).ready(function() {
     $('.fa-camera').on('click', function() {
         console.log("camera");
         startWebCam(function () {
-            toggleVisibility($('.camera'))
-            toggleVisibility($('.fa-upload'))
-            toggleVisibility($('.or'))
-            $('.fa-camera').on('click', funcation (e) {
+            toggleVisibility($('.camera'));
+            toggleVisibility($('.fa-upload'));
+            toggleVisibility($('.or'));
+            $('.fa-camera').on('click', function (e) {
                 var photo = takePicture(e);
-                postImage(photo);
+                toggleVisibility($('.loader'));
+                toggleVisibility($('.camera'));
+                toggleVisibility($('.fa-camera'));
+                postImage(photo, function () {
+                    toggleVisibility($('.loader'));
+                    toggleVisibility($('.snake'));
+                });
             });
         });
     })

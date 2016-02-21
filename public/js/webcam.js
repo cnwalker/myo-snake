@@ -1,6 +1,6 @@
 startWebCam = function (callback) {
     var video = document.getElementById('video');
-    var canvas = document.getElementById('canvas');
+    var canvas = document.getElementById('photoCanvas');
     var photo = document.getElementById('photo');
     navigator.getMedia = (navigator.getUserMedia ||
         navigator.webkitGetUserMedia ||
@@ -48,18 +48,13 @@ postImage = function (data, callback) {
         contentType: 'application/octet-stream',
         data: data,
         processData: false,
-        success: function(res) {
-            startSnake(res);
-        },
+        success: callback,
         error: function(err) {
-            // TODO
-            console.log(err);
-            handleError(err);
+            alert('Something went wrong with processing your image.');
         }
     });
 }
 
 startSnake = function (data) {
     snake_init();
-
 }

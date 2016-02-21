@@ -14,3 +14,20 @@
 .clickable {
     cursor: pointer;
 }
+
+.loader {
+    display: none;
+    position: fixed;
+    top: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.loader > span {
+    width: 70px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    margin: -35px 0 0 -35px;
+}
