@@ -33,9 +33,9 @@ $(document).ready(function() {
         canvas.width = width;
         canvas.height = height;
         context.drawImage(video, 0, 0, width, height);
-        var data = context.getImageData(0, 0, width, height).data;
-        // console.log(data.data);
-        postImage(data);
+        // var data = context.getImageData(0, 0, width, height).data;
+        var dataURL = canvas.toDataURL();
+        postImage(dataURL);
         e.preventDefault();
     }, false);
 })

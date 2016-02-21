@@ -1,7 +1,10 @@
 var express = require('express');
 var app = express();
 var url = require('url');
+var fs = require('fs');
 const spawn = require('child_process').spawn;
+const StringDecoder = require('string_decoder').StringDecoder;
+const decoder = new StringDecoder('utf8');
 var bodyParser = require('body-parser');
 var stream = require('stream');
 
@@ -32,44 +35,47 @@ app.get('/', function(request, response) {
 });
 
 app.post('/', function(request, response) {
-    var imgStream = new stream.PassThrough();
-    var img_data = request.body;
-    imgStream.end(img_data);
-    var child = spawn('python',['-BW ignore','python-script/cam_edge.py'], {
-        stdio: 'pipe'
+    var img_data = request.body.toString() ;
+    var base64Data = img_data.replace(/^data:image\/png;base64,/, "");
+    var fname = 'tmp/' + Date.now().toString() +'.png'
+    fs.writeFile(fname, base64Data, 'base64', (err) => {
+        var imgStream = fs.createReadStream(fname)
+        var child = spawn('python',['-W ignore','python-script/cam_edge.py'], {
+            stdio: 'pipe'
+        });
+        imgStream.pipe(child.stdin);
+
+        var sent = false;
+
+        child.stdout.on('data', (data) => {
+            console.log("stdout: " + data);
+            var payload = {
+                data: decoder.write(data)
+            }
+            if (!sent) {
+                response.send(payload);
+            }
+            sent = true;
+        });
+
+        child.stderr.on('data', (data) => {
+            console.log("error: "+data);
+            var payload = {
+                error: true
+            }
+            if (!sent) {
+                response.send(payload);
+            }
+            sent = true;
+        });
+
+        child.on('close', (code) => {
+            console.log(`child process exited with code ${code}`);
+            fs.unlink(fname);
+            sent = true;
+            // response.send(code);
+        });
     });
-    imgStream.pipe(child.stdin);
-
-    var sent = false;
-
-    child.stdout.on('data', (data) => {
-        console.log("stdout: " + data);
-        var payload = {
-            data: data
-        }
-        if (!sent) {
-            response.send(payload);
-        }
-        sent = true;
-    });
-
-    child.stderr.on('data', (data) => {
-        console.log("error: "+data);
-        var payload = {
-            error: true
-        }
-        if (!sent) {
-            response.send(payload);
-        }
-        sent = true;
-    });
-
-    child.on('close', (code) => {
-        console.log(`child process exited with code ${code}`);
-        sent = true;
-        // response.send(code);
-    });
-
 });
 
 app.listen(app.get('port'), function() {
