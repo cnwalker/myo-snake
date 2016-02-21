@@ -60,7 +60,7 @@ app.post('/', function(request, response) {
         });
 
         child.on('close', function (code) {
-            console.log(`child process exited with code ${code} and length ${outputString.length}`);
+            console.log('child process exited with code ' + code + ' and length ' + outputString.length);
             fs.unlink(fname);
             var payload = {
                 data: outputString
