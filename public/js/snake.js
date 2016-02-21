@@ -14,7 +14,7 @@ $(document).ready(function(){
 	//Lets create the snake now
 	var snake_array; //an array of cells to make up the snake
 
-	function init()
+	function snake_init()
 	{
 		d = "right"; //default direction
 		create_snake();
@@ -27,7 +27,7 @@ $(document).ready(function(){
 		if(typeof game_loop != "undefined") clearInterval(game_loop);
 		game_loop = setInterval(paint, 60);
 	}
-	init();
+	snake_init();
 
 	function create_snake()
 	{
@@ -150,5 +150,5 @@ $(document).ready(function(){
 		else if(key == "39" && d != "left") d = "right";
 		else if(key == "40" && d != "up") d = "down";
 		//The snake is now keyboard controllable
-	})	
+	})
 })
