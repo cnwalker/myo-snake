@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var url = require('url');
 var fs = require('fs');
+var myo = require('myo');
 const spawn = require('child_process').spawn;
 const StringDecoder = require('string_decoder').StringDecoder;
 const decoder = new StringDecoder('utf8');
@@ -31,7 +32,20 @@ app.get('/', function(request, response) {
         canvasWidth: query.canvasWidth || 500,
         canvasHeight: query.canvasHeight || 500
     }
+
     response.render('pages/index', args);
+});
+
+app.post('/shrek', function(request, response) {
+    fs.readFile(__dirname + '/dummy_data_2.json', function (err, data) {
+        if (err) {
+            return console.error(err);
+        }
+        var game_logic = JSON.parse(data.toString())
+        game_logic['canvasWidth'] = game_logic.map_array[0].length;
+        game_logic['canvasheight'] = game_logic.map_array.length;
+        response.send(game_logic);
+    });
 });
 
 app.post('/', function(request, response) {
