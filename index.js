@@ -45,17 +45,10 @@ app.post('/', function(request, response) {
         });
         imgStream.pipe(child.stdin);
 
-        var sent = false;
+        var outputString = '';
 
         child.stdout.on('data', (data) => {
-            console.log("stdout: " + data);
-            var payload = {
-                data: decoder.write(data)
-            }
-            if (!sent) {
-                response.send(payload);
-            }
-            sent = true;
+            outputString += data.toString();
         });
 
         child.stderr.on('data', (data) => {
@@ -63,17 +56,16 @@ app.post('/', function(request, response) {
             var payload = {
                 error: true
             }
-            if (!sent) {
-                response.send(payload);
-            }
-            sent = true;
+            response.send(payload);
         });
 
         child.on('close', (code) => {
-            console.log(`child process exited with code ${code}`);
+            console.log(`child process exited with code ${code} and length ${outputString.length}`);
             fs.unlink(fname);
-            sent = true;
-            // response.send(code);
+            var payload = {
+                data: outputString
+            }
+            response.send(payload);
         });
     });
 });
