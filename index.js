@@ -4,6 +4,7 @@ var url = require('url');
 const spawn = require('child_process').spawn;
 var bodyParser = require('body-parser');
 var stream = require('stream');
+var myo = require('myo')
 
 app.use(bodyParser.json()); // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({ // to support URL-encoded bodies
