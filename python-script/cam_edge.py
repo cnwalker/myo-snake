@@ -17,7 +17,7 @@ def make_board(img,conv_x,conv_y):
 
 def main():
     data = sys.stdin.read()
-    fname = str(time.time()) + '.png'
+    fname = 'tmp/' + str(time.time()) + '.png'
     f=open (fname, 'wb')
     f.write(data)
     f.close()
