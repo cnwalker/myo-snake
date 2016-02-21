@@ -3,13 +3,6 @@ import numpy as np
 import cv2
 import json
 
-def take_pic():
-    cam = cv2.VideoCapture(1) # 1 is the connected webcam, IDK how to handle this... maybe better to have some web code which does this and just hands the image to python somehow.
-    s, frame = cam.read()
-    img_g = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    cam.release()
-    return img_g
-
 def make_board(img,conv_x,conv_y):
     im_shape = img.shape
     map_size = (im_shape[0]/conv_y,im_shape[1]/conv_x)
@@ -23,7 +16,15 @@ def make_board(img,conv_x,conv_y):
     return snake_board
 
 def main():
-    img_g = take_pic()
+    data = sys.stdin.read()
+    fname = str(time.time()) + '.png'
+    f=open (fname, 'wb')
+    f.write(data)
+    f.close()
+
+    img = cv2.imread(fname)
+    img_g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
     edges = cv2.Canny(img_g,10,100,2)
     snake_map = make_board(edges,7,7)
     snake_list = [list(row)for row in snake_map]
