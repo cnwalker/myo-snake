@@ -11,9 +11,10 @@ $(document).ready(function() {
                 toggleVisibility($('.loader'));
                 toggleVisibility($('.camera'));
                 toggleVisibility($('.fa-camera'));
-                postImage(photo, function () {
+                postImage(photo, function (res) {
                     toggleVisibility($('.loader'));
                     toggleVisibility($('.snake'));
+                    startSnake(res);
                 });
             });
         });
@@ -33,9 +34,10 @@ handleFile = function (files) {
         toggleVisibility($('.or'));
         toggleVisibility($('.fa-upload'));
         toggleVisibility($('.loader'));
-        postImage(reader.result, function () {
+        postImage(reader.result, function (res) {
             toggleVisibility($('.loader'));
             toggleVisibility($('.snake'));
+            startSnake(res);
         });
     }, false);
 

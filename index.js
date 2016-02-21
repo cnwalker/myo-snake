@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var url = require('url');
 var fs = require('fs');
+var myo = require('myo');
 const spawn = require('child_process').spawn;
 const StringDecoder = require('string_decoder').StringDecoder;
 const decoder = new StringDecoder('utf8');
@@ -31,6 +32,7 @@ app.get('/', function(request, response) {
         canvasWidth: query.canvasWidth || 500,
         canvasHeight: query.canvasHeight || 500
     }
+
     response.render('pages/index', args);
 });
 

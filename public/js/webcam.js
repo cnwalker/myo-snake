@@ -71,7 +71,3 @@ postImage = function (data, callback) {
         }
     });
 }
-
-startSnake = function (data) {
-    snake_init();
-}
