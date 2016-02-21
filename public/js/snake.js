@@ -2,7 +2,7 @@ startSnake = function (init) {
     var game_logic = JSON.parse(init.data);
     game_logic['canvasWidth'] = game_logic.map_array[0].length;
     game_logic['canvasHeight'] = game_logic.map_array.length;
-
+    // console.log(game_logic['good_points'].length)
     createGame(game_logic);
 };
 
@@ -26,11 +26,12 @@ createGame = function(game_logic){
     canvas.height = game_logic['canvasHeight'] *cw;
     // }
 
-    for (var ix = 0; ix < game_logic['canvasWidth']; ix++){
-        for (var iy = 0; iy < game_logic['canvasHeight']; iy++) {
-            paint_cell(ix, iy, "white", "black")
-        }
-    }
+    // for (var ix = 0; ix < game_logic['canvasWidth']; ix++){
+    //     for (var iy = 0; iy < game_logic['canvasHeight']; iy++) {
+    //         paint_cell(ix, iy, "white", "black")
+    //     }
+    // }
+    paint_board_with_image(game_logic['good_points'], game_logic['bad_points']);
 
     function init() {
     	    d = "right"; //default direction
@@ -45,7 +46,7 @@ createGame = function(game_logic){
     		if(typeof game_loop != "undefined") clearInterval(game_loop);
     		game_loop = setInterval(paint, 60);
     }
-    // init();
+    init();
 
     var d;
     var food;
@@ -56,9 +57,11 @@ createGame = function(game_logic){
 
     function paint_board_with_image(open_cells, deadly_cells)
     {
-        for (deadly_cell in deadly_cells)
-        {
-            paint_cell(deadly_cell[1], deadly_cell[0], "white", "black");
+        // for (var i = 0; i < open_cells.length; i++) {
+        //     paint_cell(open_cells[i][1], open_cells[i][0], "blue", "white");
+        // }
+        for (var j = 0; j < deadly_cells.length; j++) {
+            paint_cell(deadly_cells[j][1], deadly_cells[j][0], "black", "white");
         }
     }
 

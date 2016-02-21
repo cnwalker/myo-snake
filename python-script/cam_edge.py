@@ -28,7 +28,7 @@ def get_canvas(img_g,scale_board=False,num_x=20,num_y=30):
         conv_y = edges.shape[0]/num_y
         snake_map = make_board(edges,conv_x,conv_y)
     else:
-        snake_map = make_board(edges,7,7)
+        snake_map = make_board(edges,10,10)
 
     return snake_map
 
@@ -50,7 +50,7 @@ def main():
     #remove files
     # os.remove('./' + fname)
 
-    s_map = get_canvas(img,True,50,50)
+    s_map = get_canvas(img)
     blob = frontier.get_big_blob(s_map)
     snake_list = s_map.tolist()
     edge_array = s_map.nonzero()
