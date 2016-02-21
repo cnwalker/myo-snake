@@ -46,6 +46,7 @@ stopWebCam = function () {
 }
 
 takePicture = function(e) {
+    var canvas = document.getElementById('photoCanvas');
     var context = canvas.getContext('2d');
     var height = video.videoHeight;
     var width = video.videoWidth;

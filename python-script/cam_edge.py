@@ -19,10 +19,16 @@ def make_board(img,conv_x,conv_y):
                 snake_board[i,j] = 1
     return snake_board
 
-def get_canvas(img_g):
-
+def get_canvas(img_g,scale_board=False,num_x=20,num_y=30):
+    """Scale board asks if you want to set the scale. Num x and y will be number of
+    snake boxes in the x and y directions"""
     edges = cv2.Canny(img_g,10,100,2)
-    snake_map = make_board(edges,7,7)
+    if scale_board:
+        conv_x = edges.shape[1]/num_x
+        conv_y = edges.shape[0]/num_y
+        snake_map = make_board(edges,conv_x,conv_y)
+    else:
+        snake_map = make_board(edges,10,10)
 
     return snake_map
 

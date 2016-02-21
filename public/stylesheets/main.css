@@ -3,8 +3,40 @@
     margin: auto;
 }
 
+.relative {
+    position: relative;
+}
+
+.title {
+    padding-top: 40px;
+}
+
+.buttons {
+    padding-top: 20px;
+}
+
+.button {
+    top: -4px;
+    position: relative;
+}
+
 .text-center {
     text-align: center;
+}
+
+#demo-canvas {
+    z-index: -10;
+    position: absolute;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 800px;
+}
+
+.middle {
+    font-size: 70px;
 }
 
 .hover-blue:hover {
