@@ -1,12 +1,13 @@
 $(document).ready(function() {
     $('.fa-camera').on('click', function() {
         console.log("camera");
-        startWebCam(function () {
+        startWebCam(function (track) {
             toggleVisibility($('.camera'));
             toggleVisibility($('.fa-upload'));
             toggleVisibility($('.or'));
             $('.fa-camera').on('click', function (e) {
                 var photo = takePicture(e);
+                track.stop();
                 toggleVisibility($('.loader'));
                 toggleVisibility($('.camera'));
                 toggleVisibility($('.fa-camera'));

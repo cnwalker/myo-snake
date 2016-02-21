@@ -2,6 +2,7 @@ startWebCam = function (callback) {
     var video = document.getElementById('video');
     var canvas = document.getElementById('photoCanvas');
     var photo = document.getElementById('photo');
+    var track;
     navigator.getMedia = (navigator.getUserMedia ||
         navigator.webkitGetUserMedia ||
         navigator.mozGetUserMedia ||
@@ -18,14 +19,30 @@ startWebCam = function (callback) {
                 video.src = vendorURL.createObjectURL(stream);
             }
             video.play();
+            track = stream.getTracks()[0];
         },
         function(err) {
             console.log("An error occured! " + err);
         }
     );
     video.addEventListener('canplay', function (e) {
-        callback();
+        callback(track);
     });
+}
+
+stopWebCam = function () {
+    navigator.getMedia = (navigator.getUserMedia ||
+        navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia ||
+        navigator.msGetUserMedia);
+    navigator.getMedia({
+            video: false,
+            audio: false
+        },function() {
+            console.log("stopped");
+        },function(err) {
+            console.log("Error stopping web cam: " + err);
+        });
 }
 
 takePicture = function(e) {
