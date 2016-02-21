@@ -36,18 +36,6 @@ app.get('/', function(request, response) {
     response.render('pages/index', args);
 });
 
-app.post('/shrek', function(request, response) {
-    fs.readFile(__dirname + '/dummy_data_2.json', function (err, data) {
-        if (err) {
-            return console.error(err);
-        }
-        var game_logic = JSON.parse(data.toString())
-        game_logic['canvasWidth'] = game_logic.map_array[0].length;
-        game_logic['canvasheight'] = game_logic.map_array.length;
-        response.send(game_logic);
-    });
-});
-
 app.post('/', function(request, response) {
     var img_data = request.body.toString() ;
     var base64Data = img_data.replace(/^data:image\/png;base64,/, "");
