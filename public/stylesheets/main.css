@@ -2,3 +2,15 @@
     width: 640px;
     margin: auto;
 }
+
+.text-center {
+    text-align: center;
+}
+
+.hover-blue:hover {
+    color: blue;
+}
+
+.clickable {
+    cursor: pointer;
+}

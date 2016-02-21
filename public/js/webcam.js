@@ -1,4 +1,4 @@
-$(document).ready(function() {
+startWebCam = function (callback) {
     var video = document.getElementById('video');
     var canvas = document.getElementById('canvas');
     var photo = document.getElementById('photo');
@@ -23,24 +23,25 @@ $(document).ready(function() {
             console.log("An error occured! " + err);
         }
     );
+    video.addEventListener('canplay', function (e) {
+        callback();
+    });
+}
 
+takePicture = function(e) {
+    var context = canvas.getContext('2d');
+    var height = video.videoHeight;
+    var width = video.videoWidth;
+    canvas.width = width;
+    canvas.height = height;
+    context.drawImage(video, 0, 0, width, height);
+    // var data = context.getImageData(0, 0, width, height).data;
+    var dataURL = canvas.toDataURL();
+    e.preventDefault();
+    return dataURL;
+};
 
-
-    webcamePhoto.addEventListener('click', function(e) {
-        var context = canvas.getContext('2d');
-        var height = video.videoHeight;
-        var width = video.videoWidth;
-        canvas.width = width;
-        canvas.height = height;
-        context.drawImage(video, 0, 0, width, height);
-        // var data = context.getImageData(0, 0, width, height).data;
-        var dataURL = canvas.toDataURL();
-        postImage(dataURL);
-        e.preventDefault();
-    }, false);
-})
-
-postImage = function (data) {
+postImage = function (data, callback) {
     $.ajax({
         url: '/',
         type: 'POST',
