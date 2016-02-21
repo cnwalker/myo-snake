@@ -54,7 +54,11 @@ createGame = function(game_logic){
 
     //Lets create the snake now
     var snake_array; //an array of cells to make up the snake
-
+    var collision_points = [];
+    for (var i = 0; i < game_logic['edge_list'].length; i++) {
+        collision_points.push({x:game_logic['edge_list'][i][1], y:game_logic['edge_list'][i][0]});
+    }
+    console.log(collision_points);
     function paint_board_with_image(open_cells, deadly_cells)
     {
         // for (var i = 0; i < open_cells.length; i++) {
@@ -117,7 +121,7 @@ createGame = function(game_logic){
     	//This will restart the game if the snake hits the wall
     	//Lets add the code for body collision
     	//Now if the head of the snake bumps into its body, the game will restart
-    	if(nx == -1 || nx == w/cw || ny == -1 || ny == h/cw || check_collision(nx, ny, snake_array))
+    	if(nx <= -1 || nx >= w/cw || ny <= -1 || ny >= h/cw || check_collision(nx, ny, snake_array) || check_bad(nx, ny))
     	{
     		//restart game
     		init();
@@ -172,12 +176,20 @@ createGame = function(game_logic){
     {
     	//This function will check if the provided x/y coordinates exist
     	//in an array of cells or not
+
     	for(var i = 0; i < array.length; i++)
     	{
     		if(array[i].x == x && array[i].y == y)
     		 return true;
     	}
     	return false;
+    }
+
+    function check_bad(x, y)
+    {
+        //This function will check if the provided x/y coordinates exist
+        //in an array of cells or not
+        return game_logic['map_array'][y][x] == 1
     }
 
     //Lets add the keyboard controls now
