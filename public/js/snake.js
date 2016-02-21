@@ -31,7 +31,6 @@ createGame = function(game_logic){
     //         paint_cell(ix, iy, "white", "black")
     //     }
     // }
-    paint_board_with_image(game_logic['good_points'], game_logic['bad_points']);
 
     function init() {
     	    d = "right"; //default direction
@@ -117,7 +116,7 @@ createGame = function(game_logic){
     	//This will restart the game if the snake hits the wall
     	//Lets add the code for body collision
     	//Now if the head of the snake bumps into its body, the game will restart
-    	if(nx == -1 || nx == w/cw || ny == -1 || ny == h/cw || check_collision(nx, ny, snake_array))
+    	if(nx <= -1 || nx >= w/cw || ny <= -1 || ny >= h/cw || check_collision(nx, ny, snake_array))
     	{
     		//restart game
     		init();
@@ -149,7 +148,7 @@ createGame = function(game_logic){
     	{
     		var c = snake_array[i];
     		//Lets paint 10px wide cells
-    		paint_cell(c.x, c.y, "white", "black");
+    		paint_cell(c.x, c.y, "blue", "black");
     	}
 
     	//Lets paint the food
