@@ -26,7 +26,7 @@ $(document).ready(function() {
 
 
 
-    startbutton.addEventListener('click', function(e) {
+    webcamePhoto.addEventListener('click', function(e) {
         var context = canvas.getContext('2d');
         var height = video.videoHeight;
         var width = video.videoWidth;
@@ -35,19 +35,30 @@ $(document).ready(function() {
         context.drawImage(video, 0, 0, width, height);
         var data = context.getImageData(0, 0, width, height).data;
         // console.log(data.data);
-        $.ajax({
-            url: '/image',
-            type: 'POST',
-            contentType: 'application/octet-stream',
-            data: data,
-            processData: false,
-            success: function(res) {
-                console.log("cool");
-            },
-            error: function(err) {
-                console.log(err);
-            }
-        });
+        postImage(data);
         e.preventDefault();
     }, false);
 })
+
+postImage = function (data) {
+    $.ajax({
+        url: '/',
+        type: 'POST',
+        contentType: 'application/octet-stream',
+        data: data,
+        processData: false,
+        success: function(res) {
+            startSnake(res);
+        },
+        error: function(err) {
+            // TODO
+            console.log(err);
+            handleError(err);
+        }
+    });
+}
+
+startSnake = function (data) {
+    snake_init();
+
+}

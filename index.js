@@ -40,19 +40,34 @@ app.post('/', function(request, response) {
     });
     imgStream.pipe(child.stdin);
 
+    var sent = false;
+
     child.stdout.on('data', (data) => {
         console.log("stdout");
-        // response.send(data);
+        var payload = {
+            data: data
+        }
+        if (!sent) {
+            response.send(payload);
+        }
+        sent = true;
     });
 
     child.stderr.on('data', (data) => {
-        console.log("Error:" + data);
-        // response.send(data);
+        console.log("error");
+        var payload = {
+            error: true
+        }
+        if (!sent) {
+            response.send(payload);
+        }
+        sent = true;
     });
 
     child.on('close', (code) => {
         console.log(`child process exited with code ${code}`);
-        response.send(code);
+        sent = true;
+        // response.send(code);
     });
 
 });

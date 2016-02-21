@@ -81,7 +81,7 @@ $(document).ready(function(){
 		if(nx == -1 || nx == w/cw || ny == -1 || ny == h/cw || check_collision(nx, ny, snake_array))
 		{
 			//restart game
-			init();
+			snake_init();
 			//Lets organize the code a bit now.
 			return;
 		}
