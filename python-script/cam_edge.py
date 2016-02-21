@@ -29,24 +29,28 @@ def get_canvas(img_g):
 
 
 def main():
-##    data = sys.stdin.read()
-##    #create file
+    data = sys.stdin.read()
+    #create file
     fname = 'tmp/' + str(time.time()) + '.png'
-##    f=open (fname, 'wb')
-##    f.write(data)
-##    f.close()
+    f=open (fname, 'wb')
+    f.write(data)
+    f.close()
+
+    img = cv2.imread(fname)
+    img_g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
 
     #remove files
-##    os.remove('./' + fname)
-    img = sc2.imread(fname)
-    s_map = get_canvas(img)
+    os.remove('./' + fname)
+
+    s_map = get_canvas(img_g)
     blob = frontier.get_big_blob(s_map)
     snake_list = s_map.tolist()
     edge_array = s_map.nonzero()
     edge_pt_list = zip(edge_array[0].tolist(),edge_array[1].tolist())
     for pt in blob:
         s_map[pt[0],pt[1]] = 1
-    bad_array = 1 - snake_map
+    bad_array = 1 - s_map
     bad_array_indices = bad_array.nonzero()
     bad_pt_list = zip(bad_array_indices[0].tolist(),bad_array_indices[1].tolist())
     print type(bad_pt_list[2][1])
