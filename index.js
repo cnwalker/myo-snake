@@ -1,14 +1,15 @@
 var express = require('express');
 var app = express();
 var url = require('url');
-var exec = require('child_process').exec;
+const spawn = require('child_process').spawn;
 var bodyParser = require('body-parser');
+var stream = require('stream');
 
-app.use( bodyParser.json());       // to support JSON-encoded bodies
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-  extended: true
+app.use(bodyParser.json()); // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({ // to support URL-encoded bodies
+    extended: true
 }));
-app.use(bodyParser.raw({     // to support URL-encoded bodies
+app.use(bodyParser.raw({ // to support URL-encoded bodies
     limit: '5MB',
     type: 'application/octet-stream'
 }));
@@ -22,31 +23,40 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 app.get('/', function(request, response) {
-  var query = url.parse(request.url, true).query;
-  args = {
-      canvasWidth: query.canvasWidth || 500,
-      canvasHeight: query.canvasHeight || 500
-  }
-  response.render('pages/index', args);
+    var query = url.parse(request.url, true).query;
+    args = {
+        canvasWidth: query.canvasWidth || 500,
+        canvasHeight: query.canvasHeight || 500
+    }
+    response.render('pages/index', args);
 });
 
 app.post('/', function(request, response) {
+    var imgStream = new stream.PassThrough();
+    var img_data = request.body;
+    imgStream.end(img_data);
+    var child = spawn('python',['/Users/hlewis/projects/hackill/myo-snake/python-script/test.py'], {
+        stdio: 'pipe'
+    });
+    imgStream.pipe(child.stdin);
 
-    // var args = [ './child.js' ];
-    // var child = spawn(process.execPath, args, { stdio: ['pipe', 1, 2, 'ipc'] });
-    // img_data.pipe(child.stdin);
-     exec(__dirname + '/python_script.py', function(error, stdout, stderr) {
-      if (error) {
-        console.log(error);
-      }
-      console.log(callback(JSON.parse(stdout)));
-  });
-    response.send(JSON.stringify({
-        canvasWidth: 100,
-        canvasHeight: 200
-    }));
+    child.stdout.on('data', (data) => {
+        console.log("stdout");
+        // response.send(data);
+    });
+
+    child.stderr.on('data', (data) => {
+        console.log("Error:" + data);
+        // response.send(data);
+    });
+
+    child.on('close', (code) => {
+        console.log(`child process exited with code ${code}`);
+        response.send(code);
+    });
+
 });
 
 app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
+    console.log('Node app is running on port', app.get('port'));
 });
