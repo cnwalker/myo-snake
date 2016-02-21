@@ -1,6 +1,10 @@
 import frontier
+import os
+import sys
+import time
 import numpy as np
-import cv2
+from skimage import io as skio
+from skimage import feature
 import json
 
 def make_board(img,conv_x,conv_y):
@@ -17,19 +21,22 @@ def make_board(img,conv_x,conv_y):
 
 def main():
     data = sys.stdin.read()
+    #create file
     fname = 'tmp/' + str(time.time()) + '.png'
     f=open (fname, 'wb')
     f.write(data)
     f.close()
     # TODO this could be done better, cv2.imdecode()?
 
-    img = cv2.imread(fname)
-    img_g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    img = skio.imread(fname, as_grey = True)
 
-    edges = cv2.Canny(img_g,10,100,2)
+    #remove files
+    os.remove('./' + fname)
+
+    edges = feature.canny(img,sigma=2.,low_threshold=10.,high_threshold=100.)
     snake_map = make_board(edges,7,7)
     snake_list = [list(row)for row in snake_map]
-    blob = front.get_big_blob(snake_map)
+    blob = frontier.get_big_blob(snake_map)
     edge_array = snake_map.nonzero()
     edge_pt_list = zip(edge_array[0],edge_array[1])
     for pt in blob:

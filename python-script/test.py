@@ -1,6 +1,6 @@
 #!python
 import sys
-import cv2
+from skimage import io as skio
 import time
 
 if __name__ == "__main__":
@@ -15,7 +15,7 @@ if __name__ == "__main__":
     f.write(data)
     f.close()
 
-    img = cv2.imread(fname)
+    img = skio.imread(fname, as_grey = True)
     print img.shape
     # new_img = np.array(img)
     # plt.imshow(new_img)
