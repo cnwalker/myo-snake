@@ -35,7 +35,7 @@ app.post('/', function(request, response) {
     var imgStream = new stream.PassThrough();
     var img_data = request.body;
     imgStream.end(img_data);
-    var child = spawn('python',['/Users/hlewis/projects/hackill/myo-snake/python-script/test.py'], {
+    var child = spawn('python',['-BW ignore','python-script/cam_edge.py'], {
         stdio: 'pipe'
     });
     imgStream.pipe(child.stdin);
@@ -43,7 +43,7 @@ app.post('/', function(request, response) {
     var sent = false;
 
     child.stdout.on('data', (data) => {
-        console.log("stdout");
+        console.log("stdout: " + data);
         var payload = {
             data: data
         }
@@ -54,7 +54,7 @@ app.post('/', function(request, response) {
     });
 
     child.stderr.on('data', (data) => {
-        console.log("error");
+        console.log("error: "+data);
         var payload = {
             error: true
         }
