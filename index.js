@@ -77,7 +77,7 @@ app.post('/', function(request, response) {
             }
         });
 
-        child.on('error', (err) => {
+        child.on('error', function (err) {
             console.log('Failed to start child process.');
             fs.unlink(fname); //What if already called?
             if (!payload.error) {
