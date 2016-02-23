@@ -44,6 +44,9 @@ def main():
     # f.close()
     nbuf = np.frombuffer(data, dtype="int8")
     img = cv2.imdecode(nbuf, 0)
+    if (img is None):
+        sys.stderr.write('Error reading in image')
+        exit(1)
     # img_g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
 
