@@ -143,7 +143,7 @@ createGame = function(game_logic){
     	}
 
     	//Lets paint the food
-    	paint_cell(food.x, food.y, "white", "white");
+    	paint_cell(food.x, food.y, "white", "black");
     	//Lets paint the score
     	var score_text = "Score: " + score;
     	ctx.fillText(score_text, 5, h-5);
