@@ -46,7 +46,7 @@ createGame = function(game_logic){
 
             var old_ctx = ctx;
             ctx = document.getElementById('photoCanvas').getContext("2d");
-            paint_board_with_image(game_logic['good_points'], game_logic['bad_points']);
+            paint_cells(game_logic['bad_points']);
             ctx = old_ctx;
 
     		//Lets move the snake now using a timer which will trigger the paint function
@@ -64,10 +64,10 @@ createGame = function(game_logic){
     var collision_points = [];
     init();
 
-    function paint_board_with_image(open_cells, deadly_cells)
+    function paint_cells(cells)
     {
-        for (var j = 0; j < deadly_cells.length; j++) {
-            paint_cell(deadly_cells[j][1], deadly_cells[j][0], "black", "white");
+        for (var j = 0; j < cells.length; j++) {
+            paint_cell(cells[j][1], cells[j][0], "black", "white");
         }
     }
 
