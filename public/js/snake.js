@@ -39,13 +39,21 @@ createGame = function(game_logic){
 
     		//finally lets display the score
     		score = 0;
+            for (var i = 0; i < game_logic['edge_list'].length; i++) {
+                collision_points.push({x:game_logic['edge_list'][i][1], y:game_logic['edge_list'][i][0]});
+            }
+            console.log(collision_points);
+
+            var old_ctx = ctx;
+            ctx = document.getElementById('photoCanvas').getContext("2d");
+            paint_board_with_image(game_logic['good_points'], game_logic['bad_points']);
+            ctx = old_ctx;
 
     		//Lets move the snake now using a timer which will trigger the paint function
     		//every 60ms
     		if(typeof game_loop != "undefined") clearInterval(game_loop);
     		game_loop = setInterval(paint, 60);
     }
-    init();
 
     var d;
     var food;
@@ -54,15 +62,10 @@ createGame = function(game_logic){
     //Lets create the snake now
     var snake_array; //an array of cells to make up the snake
     var collision_points = [];
-    for (var i = 0; i < game_logic['edge_list'].length; i++) {
-        collision_points.push({x:game_logic['edge_list'][i][1], y:game_logic['edge_list'][i][0]});
-    }
-    console.log(collision_points);
+    init();
+
     function paint_board_with_image(open_cells, deadly_cells)
     {
-        // for (var i = 0; i < open_cells.length; i++) {
-        //     paint_cell(open_cells[i][1], open_cells[i][0], "blue", "white");
-        // }
         for (var j = 0; j < deadly_cells.length; j++) {
             paint_cell(deadly_cells[j][1], deadly_cells[j][0], "black", "white");
         }
@@ -100,8 +103,6 @@ createGame = function(game_logic){
     	//Lets paint the canvas now
 
         copyCanvas();
-
-        paint_board_with_image(game_logic['good_points'], game_logic['bad_points']);
 
     	//The movement code for the snake to come here.
     	//The logic is simple
