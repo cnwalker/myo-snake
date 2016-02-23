@@ -30,8 +30,17 @@ handleFile = function (files) {
     var reader  = new FileReader();
 
     reader.addEventListener("load", function () {
+        var img = new Image();
+        img.src = reader.result;
+
+        var canvas = document.getElementById('photoCanvas');
+        var context = canvas.getContext('2d');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        context.drawImage(img, 0, 0, img.width, img.height);
+
         toggleVisibility($('.fa-camera'));
-        toggleVisibility($('.or'));
+        toggleVisibility($('.middle'));
         toggleVisibility($('.fa-upload'));
         toggleVisibility($('.loader'));
         postImage(reader.result, function (res) {
@@ -42,6 +51,7 @@ handleFile = function (files) {
     }, false);
 
     if (files[0]) {
+        console.log(files[0]);
         reader.readAsDataURL(files[0]);
     }
 }

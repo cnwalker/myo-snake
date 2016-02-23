@@ -1,7 +1,7 @@
 startSnake = function (init) {
     var game_logic = JSON.parse(init.data);
-    game_logic['canvasWidth'] = game_logic.map_array[0].length;
-    game_logic['canvasHeight'] = game_logic.map_array.length;
+    game_logic['canvasWidth'] = game_logic.bad_array[0].length;
+    game_logic['canvasHeight'] = game_logic.bad_array.length;
     // console.log(game_logic['good_points'].length)
     createGame(game_logic);
 };
@@ -9,28 +9,22 @@ startSnake = function (init) {
 createGame = function(game_logic){
     var canvas = $("#canvas")[0];
     var ctx = canvas.getContext("2d");
-    var w = game_logic['canvasWidth']* cw;
+    var cw = 10;
+    var w = game_logic['canvasWidth'] * cw;
     var h = game_logic['canvasHeight']* cw;
     var good_point;
     //Lets save the cell width in a variable for easy control
-    var cw = 10;
     //Canvas stuff
-
-    console.log($('#canvas').width());
-    console.log(game_logic['canvasWidth']);
-    console.log($('#canvas').height());
-    console.log(game_logic['canvasHeight']);
     // if (canvas.width === w && canvas.height === h)
     // {
     canvas.width = game_logic['canvasWidth']* cw;
     canvas.height = game_logic['canvasHeight'] *cw;
     // }
 
-    // for (var ix = 0; ix < game_logic['canvasWidth']; ix++){
-    //     for (var iy = 0; iy < game_logic['canvasHeight']; iy++) {
-    //         paint_cell(ix, iy, "white", "black")
-    //     }
-    // }
+    var old_ctx = ctx;
+    ctx = document.getElementById('photoCanvas').getContext("2d");
+    paint_cells(game_logic['bad_points']);
+    ctx = old_ctx;
 
     function init() {
     	    d = "right"; //default direction
@@ -45,7 +39,6 @@ createGame = function(game_logic){
     		if(typeof game_loop != "undefined") clearInterval(game_loop);
     		game_loop = setInterval(paint, 60);
     }
-    init();
 
     var d;
     var food;
@@ -53,14 +46,13 @@ createGame = function(game_logic){
 
     //Lets create the snake now
     var snake_array; //an array of cells to make up the snake
+    var collision_points = [];
+    init();
 
-    function paint_board_with_image(open_cells, deadly_cells)
+    function paint_cells(cells)
     {
-        // for (var i = 0; i < open_cells.length; i++) {
-        //     paint_cell(open_cells[i][1], open_cells[i][0], "blue", "white");
-        // }
-        for (var j = 0; j < deadly_cells.length; j++) {
-            paint_cell(deadly_cells[j][1], deadly_cells[j][0], "black", "white");
+        for (var j = 0; j < cells.length; j++) {
+            paint_cell(cells[j][1], cells[j][0], "black", "white");
         }
     }
 
@@ -97,13 +89,12 @@ createGame = function(game_logic){
 
         copyCanvas();
 
-        paint_board_with_image(game_logic['good_points'], game_logic['bad_points']);
-
     	//The movement code for the snake to come here.
     	//The logic is simple
     	//Pop out the tail cell and place it infront of the head cell
     	var nx = snake_array[0].x;
     	var ny = snake_array[0].y;
+
     	//These were the position of the head cell.
     	//We will increment it to get the new head position
     	//Lets add proper direction based movement now
@@ -116,7 +107,7 @@ createGame = function(game_logic){
     	//This will restart the game if the snake hits the wall
     	//Lets add the code for body collision
     	//Now if the head of the snake bumps into its body, the game will restart
-    	if(nx <= -1 || nx >= w/cw || ny <= -1 || ny >= h/cw || check_collision(nx, ny, snake_array))
+    	if(nx <= -1 || nx >= w/cw || ny <= -1 || ny >= h/cw || check_collision(nx, ny, snake_array) || game_logic['bad_array'][ny][nx])
     	{
     		//restart game
     		init();
@@ -179,6 +170,13 @@ createGame = function(game_logic){
     	return false;
     }
 
+    function check_bad(x, y)
+    {
+        //This function will check if the provided x/y coordinates exist
+        //in an array of cells or not
+        return game_logic['map_array'][y][x] == 1
+    }
+
     //Lets add the keyboard controls now
     $(document).keydown(function(e){
     	var key = e.which;
@@ -187,6 +185,7 @@ createGame = function(game_logic){
     	else if(key == "38" && d != "down") d = "up";
     	else if(key == "39" && d != "left") d = "right";
     	else if(key == "40" && d != "up") d = "down";
+        paint()
     	//The snake is now keyboard controllable
     })
 };
