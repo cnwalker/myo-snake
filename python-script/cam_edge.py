@@ -55,8 +55,9 @@ def main():
 
     s_map = get_canvas(img)
     blob = frontier.get_big_blob(s_map)
+    s_map2 = s_map<1
     snake_list = s_map.tolist()
-    edge_array = s_map.nonzero()
+    edge_array = s_map2.nonzero()
     edge_pt_list = zip(edge_array[0].tolist(),edge_array[1].tolist())
     for pt in blob:
         s_map[pt[0],pt[1]] = 1
@@ -64,7 +65,7 @@ def main():
     bad_array_indices = bad_array.nonzero()
     bad_pt_list = zip(bad_array_indices[0].tolist(),bad_array_indices[1].tolist())
     # print type(bad_pt_list[2][1])
-    result_dict = {'map_array' : snake_list, 'good_points' : blob, 'bad_points' : bad_pt_list, 'edge_list' : edge_pt_list}
+    result_dict = {'bad_array': bad_array.tolist(), 'good_points' : blob, 'bad_points' : bad_pt_list, 'edge_list' : edge_pt_list}
     out_str = json.dumps(result_dict)
     print out_str
 
