@@ -13,6 +13,7 @@ app.use(bodyParser.json()); // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({ // to support URL-encoded bodies
     extended: true
 }));
+
 app.use(bodyParser.raw({ // to support URL-encoded bodies
     limit: '5MB',
     type: 'application/octet-stream'
@@ -41,6 +42,11 @@ app.post('/', function(request, response) {
     var base64Data = img_data.replace(/^data:image\/png;base64,/, "");
     var fname = 'tmp/' + Date.now().toString() +'.png'
     fs.writeFile(fname, base64Data, 'base64', function (err) {
+        if (err) {
+            console.log('Error: writing image file ' + err);
+            response.status(400).send({error: true});
+            return;
+        }
         var imgStream = fs.createReadStream(fname)
         var child = spawn('python',['-W ignore','python-script/cam_edge.py'], {
             stdio: 'pipe'
@@ -48,6 +54,7 @@ app.post('/', function(request, response) {
         imgStream.pipe(child.stdin);
 
         var outputString = '';
+        var payload = {};
 
         child.stdout.on('data', function (data) {
             outputString += data.toString();
@@ -55,19 +62,28 @@ app.post('/', function(request, response) {
 
         child.stderr.on('data', function (data) {
             console.log("error: "+data);
-            var payload = {
-                error: true
+            if (!payload.error) {
+                payload.error = true;
+                response.status(400).send(payload);
             }
-            response.status(400).send(payload);
         });
 
         child.on('close', function (code) {
             console.log('child process exited with code ' + code + ' and length ' + outputString.length);
             fs.unlink(fname);
-            var payload = {
-                data: outputString
+            if (!payload.error) {
+                payload.data = outputString
+                response.send(payload);
             }
-            response.send(payload);
+        });
+
+        child.on('error', (err) => {
+            console.log('Failed to start child process.');
+            fs.unlink(fname); //What if already called?
+            if (!payload.error) {
+                payload.error = true
+                response.status(400).send(payload);
+            }
         });
     });
 });
