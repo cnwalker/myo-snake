@@ -2,10 +2,8 @@ var express = require('express');
 var app = express();
 var url = require('url');
 var fs = require('fs');
-var myo = require('myo');
+var stream = require('stream');
 const spawn = require('child_process').spawn;
-const StringDecoder = require('string_decoder').StringDecoder;
-const decoder = new StringDecoder('utf8');
 var bodyParser = require('body-parser');
 //var stream = require('stream');
 
@@ -39,52 +37,45 @@ app.get('/', function(request, response) {
 
 app.post('/', function(request, response) {
     var img_data = request.body.toString() ;
-    var base64Data = img_data.replace(/^data:image\/png;base64,/, "");
-    var fname = 'tmp/' + Date.now().toString() +'.png'
-    fs.writeFile(fname, base64Data, 'base64', function (err) {
-        if (err) {
-            console.log('Error: writing image file ' + err);
-            response.status(400).send({error: true});
-            return;
+    var base64string = img_data.replace(/^data:image\/png;base64,/, "");
+    var buffer = new Buffer(base64string, 'base64');
+    var bufferStream = new stream.PassThrough();
+    bufferStream.end(buffer);
+
+    var child = spawn('python',['-W ignore','python-script/cam_edge.py'], {
+        stdio: 'pipe'
+    });
+    bufferStream.pipe(child.stdin);
+
+    var outputString = '';
+    var payload = {};
+
+    child.stdout.on('data', function (data) {
+        outputString += data.toString();
+    });
+
+    child.stderr.on('data', function (data) {
+        console.log("error: "+data);
+        if (!payload.error) {
+            payload.error = true;
+            response.status(400).send(payload);
         }
-        var imgStream = fs.createReadStream(fname)
-        var child = spawn('python',['-W ignore','python-script/cam_edge.py'], {
-            stdio: 'pipe'
-        });
-        imgStream.pipe(child.stdin);
+    });
 
-        var outputString = '';
-        var payload = {};
+    child.on('close', function (code) {
+        console.log('child process exited with code ' + code + ' and length ' + outputString.length);
+        if (!payload.error) {
+            payload.data = outputString
+            response.send(payload);
+        }
+    });
 
-        child.stdout.on('data', function (data) {
-            outputString += data.toString();
-        });
-
-        child.stderr.on('data', function (data) {
-            console.log("error: "+data);
-            if (!payload.error) {
-                payload.error = true;
-                response.status(400).send(payload);
-            }
-        });
-
-        child.on('close', function (code) {
-            console.log('child process exited with code ' + code + ' and length ' + outputString.length);
-            fs.unlink(fname);
-            if (!payload.error) {
-                payload.data = outputString
-                response.send(payload);
-            }
-        });
-
-        child.on('error', function (err) {
-            console.log('Failed to start child process.');
-            fs.unlink(fname); //What if already called?
-            if (!payload.error) {
-                payload.error = true
-                response.status(400).send(payload);
-            }
-        });
+    child.on('error', function (err) {
+        console.log('Failed to start child process.');
+        if (!payload.error) {
+            payload.error = true
+            response.status(400).send(payload);
+        }
     });
 });
 
