@@ -36,8 +36,9 @@ app.get('/', function(request, response) {
 });
 
 app.post('/', function(request, response) {
+    console.log("Recieved image");
     var img_data = request.body.toString() ;
-    var base64string = img_data.replace(/^data:image\/png;base64,/, "");
+    var base64string = img_data.replace(/^data:image\/.*;base64,/, "");
     var buffer = new Buffer(base64string, 'base64');
     var bufferStream = new stream.PassThrough();
     bufferStream.end(buffer);

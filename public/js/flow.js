@@ -26,7 +26,6 @@ $(document).ready(function() {
 });
 
 handleFile = function (files) {
-    console.log(files);
     var reader  = new FileReader();
 
     reader.addEventListener("load", function () {
@@ -39,10 +38,7 @@ handleFile = function (files) {
         canvas.height = img.height;
         context.drawImage(img, 0, 0, img.width, img.height);
 
-        toggleVisibility($('.fa-camera'));
-        toggleVisibility($('.middle'));
-        toggleVisibility($('.fa-upload'));
-        toggleVisibility($('.loader'));
+
         postImage(reader.result, function (res) {
             toggleVisibility($('.loader'));
             toggleVisibility($('.snake'));
@@ -52,6 +48,10 @@ handleFile = function (files) {
 
     if (files[0]) {
         console.log(files[0]);
+        toggleVisibility($('.fa-camera'));
+        toggleVisibility($('.middle'));
+        toggleVisibility($('.fa-upload'));
+        toggleVisibility($('.loader'));
         reader.readAsDataURL(files[0]);
     }
 }
