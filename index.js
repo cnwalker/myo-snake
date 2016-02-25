@@ -5,7 +5,7 @@ var fs = require('fs');
 var stream = require('stream');
 const spawn = require('child_process').spawn;
 var bodyParser = require('body-parser');
-//var stream = require('stream');
+var sslRedirect = require('heroku-ssl-redirect');
 
 app.use(bodyParser.json()); // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({ // to support URL-encoded bodies
@@ -24,6 +24,9 @@ app.use(express.static(__dirname + '/public'));
 // views is directory for all template files
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
+
+// enable ssl redirect
+app.use(sslRedirect());
 
 app.get('/', function(request, response) {
     var query = url.parse(request.url, true).query;
